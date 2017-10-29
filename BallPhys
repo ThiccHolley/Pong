@@ -1,1 +1,64 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+public class BallPhys : MonoBehaviour {
+
+    public int speed = 3;
+    public float velX = 0f;
+    public float velY = -4f;
+    public float velZ = 0f;
+
+    // Use this for initialization
+    void Start () {
+        
+	}
+
+    private void OnCollisionEnter(Collision col)
+    {
+        GameObject colWith = col.gameObject;
+        if (colWith.name == "eastWall" || colWith.name == "westWall")
+        {
+            velX *= -1;
+        }
+        if (colWith.name == "northWall" || colWith.name == "southWall")
+        {
+            velZ *= -1;
+        }
+        if (colWith.name == "enemyGoal" || colWith.name == "playerGoal")
+        {
+            velY *= -1;
+        }
+        if (colWith.name == "test")
+        {
+            float angX = colWith.transform.eulerAngles.x;
+            float angY = colWith.transform.eulerAngles.y;
+            float angZ = colWith.transform.eulerAngles.z;
+            float cosY = Mathf.Cos(angY * Mathf.Deg2Rad);
+            float sinY = Mathf.Sin(angY * Mathf.Deg2Rad);
+            if (angX > 180)
+            {
+                angX -= 360;
+            }
+            if (angZ > 180)
+            {
+                angZ -= 360;
+            }
+            velZ += ((angX / 18) * cosY) + ((angZ / 18) * sinY);
+            velX += ((angZ / 18) * cosY) + ((angX / 18) * sinY);
+            velY *= -1;
+        }
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        Vector3 pos = transform.position;
+        pos.x += velX * speed * Time.deltaTime;
+        pos.y += velY * speed * Time.deltaTime;
+        pos.z += velZ * speed * Time.deltaTime;
+        transform.position = pos;
+
+    }
+}
 
